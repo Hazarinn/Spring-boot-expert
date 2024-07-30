@@ -5,10 +5,12 @@ import io.github.Hazarinn.domain.entity.Cliente;
 import io.github.Hazarinn.domain.entity.ItemPedido;
 import io.github.Hazarinn.domain.entity.Pedido;
 import io.github.Hazarinn.domain.entity.Produto;
+import io.github.Hazarinn.domain.enums.StatusPedido;
 import io.github.Hazarinn.domain.repository.Clientes;
 import io.github.Hazarinn.domain.repository.ItensPedido;
 import io.github.Hazarinn.domain.repository.Pedidos;
 import io.github.Hazarinn.domain.repository.Produtos;
+import io.github.Hazarinn.exception.PedidoNaoEncontradoException;
 import io.github.Hazarinn.exception.RegraNegocioException;
 import io.github.Hazarinn.rest.dto.ItemPedidoDTO;
 import io.github.Hazarinn.rest.dto.PedidoDTO;
@@ -19,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,9 +48,25 @@ public class PedidoServiceImpl implements PedidoService {
         repository.save(pedido);
         itensPedidoRepository.saveAll(itensPedidos);
         pedido.setItens(itensPedidos);
+        pedido.setStatus(StatusPedido.REALIZADO);
         return pedido;
 
+    }
 
+    public Optional<Pedido> obterPedidoCompleto(Integer id) {
+
+        return repository.findByIdFetchItens(id);
+    }
+
+    @Override
+    @Transactional
+    public void atualizaStatus(Integer id, StatusPedido statusPedido) {
+
+        repository.findById(id)
+                .map(pedido -> {
+                    pedido.setStatus(statusPedido);
+                    return repository.save(pedido);
+                }).orElseThrow(() -> new PedidoNaoEncontradoException());
 
     }
 
