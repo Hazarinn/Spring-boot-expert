@@ -8,4 +8,5 @@ import lombok.NoArgsConstructor;
 public class CredenciaisDTO {
     private String Login;
     private String senha;
+
 }

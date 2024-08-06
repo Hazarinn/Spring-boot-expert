@@ -2,6 +2,7 @@ package io.github.Hazarinn.service.impl;
 
 import io.github.Hazarinn.domain.entity.Usuario;
 import io.github.Hazarinn.domain.repository.UsuarioRepository;
+import io.github.Hazarinn.exception.SenhaInvalidaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
